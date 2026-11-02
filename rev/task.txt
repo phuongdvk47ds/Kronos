@@ -1,0 +1,52 @@
+Hãy nạp và áp dụng toàn bộ chỉ dẫn, quy tắc trích xuất bằng chứng, mẫu ASCII Mockup và cấu trúc chuẩn ISO/IEC/IEEE 26515:2018 được định nghĩa trong `.claude/skills/ba-agile-srs-generator.md`.
+
+Nhiệm vụ: Reverse-engineer toàn bộ codebase hiện tại kết hợp dữ liệu quét của `agents-reverse-engineer` (ARE) để xây dựng tài liệu hoàn chỉnh tại `docs/AGILE_SRS.md`.
+
+Tuân thủ nghiêm ngặt quy trình thực thi 4 giai đoạn đã quy định trong skill (dùng write/append nối tiếp để không cạn token):
+
+────────────────────────────────────────────────────────────────────────
+GIAI ĐOẠN 1: TẦM NHÌN, PERSONAS & HIGH LEVEL DESIGN (MỤC 1 -> MỤC 4)
+────────────────────────────────────────────────────────────────────────
+1. Kiểm tra `.are/`. Nếu chưa quét, tự chạy: `are scan --depth 3 --output .are/`
+2. Đọc `.are/summary.md` để lập bản đồ module và các service.
+3. Tạo mới file `docs/AGILE_SRS.md` và biên tập:
+   - Mục 1: PRODUCT VISION & VALUE PROPOSITION (Value Proposition Canvas, Vision Statement).
+   - Mục 2: USER PERSONAS & ROLE MATRIX (Bóc tách từ guards/middleware/auth logic).
+   - Mục 3: AGILE USER STORY MAPPING (USM) (Backbone, Walking Skeleton, Future Releases).
+   - Mục 4: HIGH-LEVEL ARCHITECTURE & COMPONENT BOUNDARIES (`mermaid graph TD` phân tầng Presentation -> Gateway -> Domain Services -> Persistence/Queues).
+
+────────────────────────────────────────────────────────────────────────
+GIAI ĐOẠN 2: DỮ LIỆU SỐNG & INTEGRATION CONTRACTS (MỤC 5 & MỤC 6)
+────────────────────────────────────────────────────────────────────────
+Nối tiếp (append) vào `docs/AGILE_SRS.md`:
+1. Quét models, entities, migrations để viết Mục 5: LIVING DOMAIN MODEL & DATA CONTRACTS
+   - Vẽ sơ đồ quan hệ thực thể `mermaid erDiagram` (đầy đủ PK, FK, quan hệ 1-1, 1-n, n-n).
+   - Data Dictionary cho các Aggregate Roots và Entities cốt lõi.
+2. Quét router/controllers/configs để viết Mục 6: SERVICE CONTRACTS & EXTERNAL BOUNDARIES
+   - Chuẩn DTO chung (Response Envelope, Error Wrapper).
+   - Danh mục kết nối ngoại vi (External APIs, Webhooks, Queues).
+
+────────────────────────────────────────────────────────────────────────
+GIAI ĐOẠN 3: BÓC TÁCH TỪNG USER STORY THEO MẪU SKILL (MỤC 7)
+────────────────────────────────────────────────────────────────────────
+Nối tiếp (append) vào `docs/AGILE_SRS.md`:
+Duyệt qua từng Epic/Module nghiệp vụ. Với MỖI User Story (`US-[EPIC]-[STT]`), áp dụng đúng các thành phần bắt buộc trong skill:
+1. User Story Statement ("As a... I want to... So that...").
+2. Code Traceability (Đường dẫn file Controller, Service, Repository, Test).
+3. UI/Screen Mockup: Áp dụng đúng 1 trong 3 mẫu ASCII Wireframe trong skill:
+   - Pattern A (Multi-step Wizard)
+   - Pattern B (Dashboard KPI)
+   - Pattern C (Data Grid with Advanced Filter)
+4. Logic Decision Flowchart (`mermaid flowchart TD` cho các rẽ nhánh if/else, transaction rollback).
+5. Runtime Sequence Diagram (`mermaid sequenceDiagram` luồng gọi Actor -> Controller -> Service -> DB/Queue).
+6. Acceptance Criteria chuẩn BDD/Gherkin (Scenario Happy path, Validation failure, Edge cases).
+
+────────────────────────────────────────────────────────────────────────
+GIAI ĐOẠN 4: QUALITY ATTRIBUTES & VERIFICATION (MỤC 8 & MỤC 9)
+────────────────────────────────────────────────────────────────────────
+1. Biên soạn Mục 8: AGILE QUALITY ATTRIBUTES & DEFINITION OF DONE (NFRs đo lường được + tiêu chí hoàn thành DoD dựa trên test/linter).
+2. Tự động kiểm thử cú pháp:
+   Chạy script: `node scripts/validate-mermaid.mjs docs/AGILE_SRS.md` (hoặc `python scripts/validate_mermaid.py docs/AGILE_SRS.md`).
+   - Tự động đọc log lỗi nếu có cú pháp Mermaid chưa đúng, sửa trực tiếp vào file và kiểm tra lại đến khi pass 100%.
+
+Bắt đầu thực thi Giai đoạn 1 ngay bây giờ.
