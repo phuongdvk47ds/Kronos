@@ -60,7 +60,7 @@ flowchart TD
 | `prediction_new.py` | AKShare | `create_realistic_fallback_data`: dữ liệu mô phỏng |
 | `prediction_cn_markets_day.py` | AKShare, 3 lần thử, chờ 1.5 giây giữa các lần | `sys.exit(1)` khi thất bại; không có dữ liệu mô phỏng |
 
-`[!]` Các tập lệnh thu thập và `prediction_new.py` thay thế dữ liệu thị trường thật bằng dữ liệu tổng hợp khi mọi nguồn thất bại. Thông điệp được in ra console, và `data.attrs['data_source']` chỉ được gán cho nguồn thật. Kết quả dự báo và biểu đồ sau đó không phân biệt nguồn trong tệp đầu ra `[CODE]`.
+`[!]` Các tập lệnh thu thập và `prediction_new.py` thay thế dữ liệu thị trường thật bằng dữ liệu tổng hợp khi mọi nguồn thất bại. Thông điệp được in ra console và `df.attrs['data_source']` được gán cho cả nguồn thật lẫn dữ liệu tổng hợp (`'模拟数据'` hoặc `'模拟历史数据'`), nhưng `attrs` không được ghi vào tệp CSV (`to_csv`). Tệp CSV, kết quả dự báo và biểu đồ sau đó không phân biệt nguồn `[CODE]`.
 
 ## 3. Chuẩn hóa schema
 
